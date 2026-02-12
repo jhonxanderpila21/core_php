@@ -40,7 +40,28 @@ if($_POST && isset($_POST['saveChanges'])){
     }
 
     if(empty($_SESSION['errors']['schoolFullName']) && empty($_SESSION['errors']['schoolShortName'])){
-        
+        // Check for duplicates in other records (same full/short name)
+        $dbCheck = $db->prepare('SELECT collid, collfullname, collshortname FROM colleges WHERE (collfullname = :collfullname OR collshortname = :collshortname) AND collid != :collid');
+        $dbCheck->execute([
+            'collfullname' => $schoolFullName,
+            'collshortname' => $schoolShortName,
+            'collid' => $schoolID
+        ]);
+        $existing = $dbCheck->fetch(PDO::FETCH_ASSOC);
+
+        if($existing){
+            if(isset($existing['collfullname']) && strcasecmp($existing['collfullname'], $schoolFullName) === 0){
+                $_SESSION['errors']['schoolFullName'] = "Full name already exists in another record";
+            }
+            if(isset($existing['collshortname']) && strcasecmp($existing['collshortname'], $schoolShortName) === 0){
+                $_SESSION['errors']['schoolShortName'] = "Short name already exists in another record";
+            }
+            $_SESSION['messages']['updateError'] = "Duplicate school values found";
+            $_SESSION['messages']['updateSuccess'] = "";
+            header("Location: $entryURL", true, 301);
+            exit;
+        }
+
         $dbStatement = $db->prepare('UPDATE colleges SET collfullname = ?, collshortname = ? WHERE collid = ?');
         $dbResult = $dbStatement->execute([
             $schoolFullName,

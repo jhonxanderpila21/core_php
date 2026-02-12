@@ -3,7 +3,7 @@
    session_start();
    session_destroy();
 
-   $limit = 6;
+   $limit = 5;
 
    $dbStatement = $db->prepare("SELECT * FROM colleges");
    $dbStatement->execute();

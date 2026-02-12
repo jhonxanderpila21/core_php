@@ -1,3 +1,4 @@
+
 <?php
 require_once("data/db.php");
 
@@ -52,6 +53,31 @@ if($_POST && isset($_POST['saveNewSchoolEntry'])){
     }
 
     if(empty($_SESSION['errors']['schoolID']) && empty($_SESSION['errors']['schoolFullName']) && empty($_SESSION['errors']['schoolShortName'])){
+        // Check for duplicate ID, full name or short name
+        $dbCheck = $db->prepare("SELECT collid, collfullname, collshortname FROM colleges WHERE collid = :collid OR collfullname = :collfullname OR collshortname = :collshortname");
+        $dbCheck->execute([
+            'collid' => $schoolID,
+            'collfullname' => $schoolFullName,
+            'collshortname' => $schoolShortName
+        ]);
+        $existing = $dbCheck->fetch(PDO::FETCH_ASSOC);
+
+        if($existing){
+            if(isset($existing['collid']) && $existing['collid'] == $schoolID){
+                $_SESSION['errors']['schoolID'] = "ID already exists";
+            }
+            if(isset($existing['collfullname']) && strcasecmp($existing['collfullname'], $schoolFullName) === 0){
+                $_SESSION['errors']['schoolFullName'] = "Full name already exists";
+            }
+            if(isset($existing['collshortname']) && strcasecmp($existing['collshortname'], $schoolShortName) === 0){
+                $_SESSION['errors']['schoolShortName'] = "Short name already exists";
+            }
+            $_SESSION['messages']['createError'] = "Duplicate school entry exists";
+            $_SESSION['messages']['createSuccess'] = "";
+            header("Location: $entryURL", true, 301);
+            exit;
+        }
+
         $dbStatement = $db->prepare("INSERT INTO colleges (collid, collfullname, collshortname) VALUES (:collid, :collfullname, :collshortname)");
         $dbResult = $dbStatement->execute([
             'collid' => $schoolID,
