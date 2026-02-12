@@ -35,6 +35,8 @@
                 <button type="submit" name="selectSchool" class="btn btn-info">Select School</button>
                 <?php if ($schoolError): ?>
                     <span style="color: black; margin-left: 10px;"><?php echo $schoolError; ?></span>
+                <?php elseif (empty($departments) && $selectedSchoolID !== null): ?>
+                    <span style="color: black; margin-left: 10px;">No departments available.</span>
                 <?php endif; ?>
             </td>
         </tr>
@@ -60,8 +62,6 @@
                 <button type="submit" name="selectDepartment" class="btn btn-info" <?php if (empty($departments)) echo 'disabled'; ?>>Select Department</button>
                 <?php if ($deptError): ?>
                     <span style="color: black; margin-left: 10px;"><?php echo $deptError; ?></span>
-                <?php elseif (empty($departments) && $selectedSchoolID !== null): ?>
-                    <span style="color: black; margin-left: 10px;">Please select a school first</span>
                 <?php endif; ?>
             </td>
         </tr>

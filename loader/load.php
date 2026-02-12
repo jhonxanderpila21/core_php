@@ -30,6 +30,10 @@ $allowed_pages = [
     'processSchoolDepartmentChoice',
     'departmentCreate',
     'processDepartmentData',
+    'processProgramData',
+    'departmentDelete',
+    'departmentUpdate',
+    'processDeptDataChanges',
     '500',
     '404',
 ];

@@ -1,20 +1,26 @@
 <?php
     require_once("data/db.php");
     session_start();
-    session_destroy();
+
+    $deptcollid = $_GET['deptcollid'] ?? null;
+
+    if(!$deptcollid){
+        header("Location: index.php?section=department&page=chooseSchool", true, 301);
+        exit;
+    }
 
     $dbStatement = $db->prepare("SELECT * FROM colleges WHERE collid = :collid");
-    $dbStatement->execute(['collid' => $_GET['deptcollid']]);
+    $dbStatement->execute(['collid' => $deptcollid]);
     $school = $dbStatement->fetch();
 
     $dbStatement = $db->prepare("SELECT * FROM departments WHERE deptcollid = :deptcollid");
-    $dbStatement->execute(['deptcollid' => $_GET['deptcollid']]);
+    $dbStatement->execute(['deptcollid' => $deptcollid]);
     $departments = $dbStatement->fetchAll();
 ?>
 
 <h1>Department List - <?php echo $school['collfullname']; ?></h1>
 <div>
-    <h2><a href="index.php?section=department&page=departmentCreate" class="btn btn-primary">Create Department</a></h2>
+    <h2><a href="index.php?section=department&page=departmentCreate&deptcollid=<?php echo $_GET['deptcollid']; ?>" class="btn btn-primary">Create Department</a></h2>
 </div>
 <table>
     <tr>
@@ -28,8 +34,8 @@
         <td><?php echo $department['deptfullname']; ?></td>
         <td><?php echo $department['deptshortname']; ?></td>
         <td>
-            <a href="index.php?section=department&page=departmentUpdate&deptid=<?php echo $department['deptid']; ?>" class="btn btn-info">Update</a>
-            <a href="index.php?section=department&page=departmentDelete&deptid=<?php echo $department['deptid']; ?>" class="btn btn-danger">Delete</a>
+            <a href="index.php?section=department&page=departmentUpdate&deptid=<?php echo $department['deptid']; ?>&deptcollid=<?php echo $deptcollid; ?>" class="btn btn-info">Update</a>
+            <a href="index.php?section=department&page=departmentDelete&deptid=<?php echo $department['deptid']; ?>&deptcollid=<?php echo $deptcollid; ?>" class="btn btn-danger">Delete</a>
         </td>
     </tr>
     <?php endforeach; ?>

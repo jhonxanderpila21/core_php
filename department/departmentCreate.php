@@ -1,6 +1,7 @@
 <?php
    session_start();
    session_regenerate_id();
+   $deptcollid = $_GET['deptcollid'] ?? null;
 ?>
 
 <!-- <!DOCTYPE html>
@@ -18,6 +19,7 @@
         <?php echo $_SESSION['messages']['createError'] ?? null; ?>
     </span>
     <form action="index.php?section=department&page=processDepartmentData" method="post">
+        <input type="hidden" name="deptcollid" value="<?php echo htmlspecialchars($deptcollid); ?>">
         <table>
             <tr>
                 <td style="width: 10em;">Department ID:</td>

@@ -3,13 +3,13 @@
     session_start();
     session_regenerate_id();
 
-    $schoolID = $_GET['collid'];
+    $departmentID = $_GET['deptid'];
 
-    $dbStatement = $db->prepare("SELECT * FROM colleges WHERE collid = :schoolID");
-    $dbStatement->execute(['schoolID' => $schoolID]);
-    $school = $dbStatement->fetch();
+    $dbStatement = $db->prepare("SELECT * FROM departments WHERE deptid = :deptid");
+    $dbStatement->execute(['deptid' => $departmentID]);
+    $department = $dbStatement->fetch();
 ?>
-<h1>School Delete</h1>
+<h1>Department Delete</h1>
 
 <span class="success-message">
     <?php echo $_SESSION['messages']['updateSuccess'] ?? null; ?>
@@ -18,27 +18,28 @@
     <?php echo $_SESSION['messages']['updateError'] ?? null; ?>
     <?php echo $_SESSION['errors']['deleteError'] ?? null; ?>
 </span>
-<form action="index.php?section=school&page=processDataChanges" method="post">
+<form action="index.php?section=department&page=processDeptDataChanges" method="post">
+    <input type="hidden" name="deptcollid" value="<?php echo htmlspecialchars($department['deptcollid']); ?>">
     <table>
         <tr>
-            <td style="width: 10em;">School ID:</td>
-            <td style="width: 30em;"><input type="text" id="schoolID" name="schoolID" value="<?php echo $school['collid']; ?>" readonly class="data-input"></td>
+            <td style="width: 10em;">Department ID:</td>
+            <td style="width: 30em;"><input type="text" id="departmentID" name="departmentID" value="<?php echo $department['deptid']; ?>" readonly class="data-input"></td>
         </tr>
         <tr>
-            <td>School Full Name:</td>
-            <td><input type="text" id="schoolFullName" name="schoolFullName" value="<?php echo $school['collfullname']; ?>" readonly class="data-input"></td>
+            <td>Department Full Name:</td>
+            <td><input type="text" id="departmentFullName" name="departmentFullName" value="<?php echo $department['deptfullname']; ?>" readonly class="data-input"></td>
             <td>
                 <span>
-                    <?php echo $_SESSION['errors']['schoolFullName'] ?? null; ?>
+                    <?php echo $_SESSION['errors']['departmentFullName'] ?? null; ?>
                 </span>
             </td>                
         </tr>
         <tr>
-            <td>School Short Name:</td>
-            <td><input type="text" id="schoolShortName" name="schoolShortName" value="<?php echo $school['collshortname']; ?>" readonly class="data-input"></td>
+            <td>Department Short Name:</td>
+            <td><input type="text" id="departmentShortName" name="departmentShortName" value="<?php echo $department['deptshortname']; ?>" readonly class="data-input"></td>
             <td>
                 <span>
-                    <?php echo $_SESSION['errors']['schoolShortName'] ?? null; ?>
+                    <?php echo $_SESSION['errors']['departmentShortName'] ?? null; ?>
                 </span>
             </td>                
         </tr>
@@ -47,14 +48,14 @@
             <td colspan="3">
                 <div class="confirmation-warning">
                     <h3 style="color: #f10a0a;">Are you sure?</h3>
-                    <p>You are about to permanently delete the school "<strong><?php echo htmlspecialchars($school['collfullname']); ?></strong>". This action cannot be undone.</p>
+                    <p>You are about to permanently delete the department "<strong><?php echo htmlspecialchars($department['deptfullname']); ?></strong>". This action cannot be undone.</p>
                 </div>
             </td>
         </tr>
         <?php endif; ?>
         <tr>
             <td colspan="2">
-                <a href="index.php?section=school&page=schoolList" class="btn btn-primary">
+                <a href="index.php?section=department&page=departmentList&deptcollid=<?php echo $department['deptcollid']; ?>" class="btn btn-primary">
                     Cancel Operation
                 </a>
                 <?php if(!isset($_SESSION['confirmDelete']) || !$_SESSION['confirmDelete']): ?>
@@ -64,7 +65,7 @@
 
                 <?php else: ?>
                 <button type="submit" name="executeDelete" class="btn btn-danger">
-                    Yes, Delete This School
+                    Yes, Delete This Department             
                 </button>
                 <button type="button" onclick="location.href='index.php?section=school&page=schoolList'" class="btn btn-secondary">
                     Cancel
