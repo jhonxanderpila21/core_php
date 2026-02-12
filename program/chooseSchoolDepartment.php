@@ -19,6 +19,11 @@
         $departments = $dbStatement->fetchAll();
     }
 
+    // Determine department button state/styles
+    $deptDisabled = empty($departments);
+    $deptButtonStyle = $deptDisabled ? 'background-color: gray; color: #fff; border-color: gray;' : 'background-color: #2196F3; color: #fff; border-color: #0d6efd;';
+    $deptButtonDisabledAttr = $deptDisabled ? 'disabled' : '';
+
 ?>
 
 <h1>Select School</h1>
@@ -53,13 +58,13 @@
     <table>
         <tr>
             <td>                
-                <select name="departmentID" id="departmentID" class="school-select" <?php if (empty($departments)) echo 'disabled'; ?>>
+                <select name="departmentID" id="departmentID" class="school-select" <?php echo $deptButtonDisabledAttr; ?>>
                     <option value=null selected hidden disabled>Select Department</option>
                     <?php foreach ($departments as $department): ?>
                     <option value="<?php echo $department['deptid']; ?>"><?php echo $department['deptfullname']; ?></option>
                     <?php endforeach; ?>
                 </select>
-                <button type="submit" name="selectDepartment" class="btn btn-info" <?php if (empty($departments)) echo 'disabled'; ?>>Select Department</button>
+                <button style="<?php echo $deptButtonStyle; ?>" type="submit" name="selectDepartment" class="btn btn-info" <?php echo $deptButtonDisabledAttr; ?>>Select Department</button>
                 <?php if ($deptError): ?>
                     <span style="color: black; margin-left: 10px;"><?php echo $deptError; ?></span>
                 <?php endif; ?>
